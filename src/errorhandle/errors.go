@@ -6,7 +6,10 @@ func clean() int {
 	return 0
 }
 
-func syntaxerror()
-{
+func syntaxerror() {
 	fmt.Println("Error Code 1 occured, \n Syntax Error")
+}
+
+func main() {
+	fmt.Println("Hello, World of debugging!")
 }
