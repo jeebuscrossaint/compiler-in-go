@@ -1,2 +1,5 @@
 # compiler-in-go
-smokin on gelato
+
+_____
+
+a programming language/compiler for me and my friends to learn golang with
