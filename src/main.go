@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func main() {
-	fmt.Println("Hello, Low Level!")
+	if len(os.Args) > 1 {
+		fmt.Println(os.Args[1])
+	} else {
+		fmt.Println("No file provided")
+	}
 }
