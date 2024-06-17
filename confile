@@ -8,3 +8,6 @@ potentally incremental build proccess
 parallel building if possible 
 install process 
 
+x = y
+x = 1
+y = x
