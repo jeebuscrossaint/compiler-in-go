@@ -12,5 +12,11 @@ install process
 x = 1
 y = x
 
+DEFAULT
+touch emptytest.txt
+
 CLEAN
 rm emptytest.txt
+
+BUILD
+go build ./src/main.go

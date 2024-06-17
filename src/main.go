@@ -103,7 +103,7 @@ func parse_functions(filename string) (map[string][]string, error) {
 
 }
 
-func run_functions(funcs map[string][]string) error {
+func run_functions(funcs map[string][]string, vars map[string]string) error {
 	shell := "/bin/sh"
 	flag := "-c"
 	if runtime.GOOS == "windows" {
@@ -115,7 +115,7 @@ func run_functions(funcs map[string][]string) error {
 		for _, command := range commands {
 			// replace variable references with values 
 			for var_name, var_value := range vars {
-				command = strings.Replace(command, "$("+var_name+"")", var_value, -1)
+				command = strings.Replace(command, "$("+var_name+")", var_value, -1)
 			}
 			cmd := exec.Command(shell, flag, command)
 			cmd.Stdout = os.Stdout
@@ -157,9 +157,20 @@ func main() {
         }
         fmt.Println(funcs)
 
-        err = run_functions(funcs)
-        if err != nil {
-            log.Fatal(err)
+        // Determine which function to run
+        funcToRun := "DEFAULT"
+        if len(os.Args) > 1 {
+            funcToRun = strings.ToUpper(os.Args[1])
+        }
+
+        // Check if the function exists
+        if commands, exists := funcs[funcToRun]; exists {
+            err = run_functions(map[string][]string{funcToRun: commands}, vars)
+            if err != nil {
+                log.Fatal(err)
+            }
+        } else {
+            fmt.Printf("Function %s not found\n", funcToRun)
         }
     } else {
         fmt.Println("file not found")
