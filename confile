@@ -1,22 +1,14 @@
-source files
-binary files / object files
-final bin/target file 
-print every single line yes or na 
-detect stuff 
-clean stuff 
-potentally incremental build proccess
-parallel building if possible 
-install process 
-
 !x = y
 x = 1
 y = x
+obj = main.o
+obj2 = main2.o
 
 DEFAULT
-touch emptytest.txt
-
-CLEAN
-rm emptytest.txt
+go build constrict.go
 
 BUILD
-go build ./src/main.go
+touch $(obj) $(obj2)
+
+CLEAN
+rm $(obj) $(obj2)

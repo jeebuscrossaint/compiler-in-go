@@ -74,33 +74,35 @@ func parse_vars(filename string) (map[string]string, error) {
 
 
 func parse_functions(filename string) (map[string][]string, error) {
-	file, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
+    file, err := os.Open(filename)
+    if err != nil {
+        return nil, err
+    }
+    defer file.Close()
 
-	funcs := make(map[string][]string)
-	scanner := bufio.NewScanner(file)
-	var current_function string
-	for scanner.Scan() {
-		line := scanner.Text()
-		if line == strings.ToUpper(line) {
-			// start of a new function
-			current_function = line
-			funcs[current_function] = []string{}
-		} else if current_function != "" {
-			// part of the current function
-			funcs[current_function] = append(funcs[current_function], line)
-		}
-	}
+    funcs := make(map[string][]string)
+    scanner := bufio.NewScanner(file)
+    var currentFunc string
+    for scanner.Scan() {
+        line := scanner.Text()
+        if line == strings.ToUpper(line) && len(line) > 0 && line[len(line)-1] != '=' {
+            // Start of a new function
+            if _, exists := funcs[line]; exists {
+                return nil, fmt.Errorf("function %s is defined more than once", line)
+            }
+            currentFunc = line
+            funcs[currentFunc] = []string{}
+        } else if currentFunc != "" {
+            // Part of the current function
+            funcs[currentFunc] = append(funcs[currentFunc], line)
+        }
+    }
 
-	if err := scanner.Err(); err != nil {
-		return nil, err
-	}
+    if err := scanner.Err(); err != nil {
+        return nil, err
+    }
 
-	return funcs, nil
-
+    return funcs, nil
 }
 
 func run_functions(funcs map[string][]string, vars map[string]string) error {
@@ -117,6 +119,7 @@ func run_functions(funcs map[string][]string, vars map[string]string) error {
 			for var_name, var_value := range vars {
 				command = strings.Replace(command, "$("+var_name+")", var_value, -1)
 			}
+			fmt.Println(command) // print the command BEFORE its run.
 			cmd := exec.Command(shell, flag, command)
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr
@@ -129,33 +132,30 @@ func run_functions(funcs map[string][]string, vars map[string]string) error {
 	return nil
 }
 
-func print_fucking_everything() {
-
-}
-
 func possible_incremental_building() {
 
 }
 
-func detect_shit() {
+func detect_stuff() {
 
 }
 
 func main() {
+    runtime.GOMAXPROCS(runtime.NumCPU())
     file_exists := locate_constrict("confile")
     if file_exists {
-        fmt.Println("file found")
+        // fmt.Println("file found")
         vars, err := parse_vars("confile")
         if err != nil {
             log.Fatal(err)
         }
-        fmt.Println(vars)
+        // fmt.Println(vars)
 
         funcs, err := parse_functions("confile")
         if err != nil {
             log.Fatal(err)
         }
-        fmt.Println(funcs)
+        // fmt.Println(funcs)
 
         // Determine which function to run
         funcToRun := "DEFAULT"
@@ -174,6 +174,7 @@ func main() {
         }
     } else {
         fmt.Println("file not found")
+	fmt.Println("make one with `touch confile` and add your commands to it")
     }
 }
 
