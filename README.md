@@ -8,7 +8,7 @@ Constrict is a custom build system I wrote for myself [think of cmake, gmake, th
 
 ## build
 
-For me, this is the last makefile I will ever write, so you can run make to build the project.
+All you need is the go compiler installed of course lol, `go build constrict.go` and then you have it!
 
 ## syntax
 
@@ -39,7 +39,7 @@ rm $(obj)
 
 ## todo
 
-I will try to add incremental building, and a couple other features including printing to stdout every single command the program runs.
+I will try to add incremental building.
 
 #### naming
 
